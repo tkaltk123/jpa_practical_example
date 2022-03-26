@@ -3,18 +3,21 @@ package entity;
 import util.OrderStatus;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "ORDERS")
 public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "MEMBER_ID")
-    private Long memberId;
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID")
+    private MemberEntity member;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ORDER_DATE")
@@ -24,6 +27,9 @@ public class OrderEntity {
     @Column(name = "STATUS")
     private OrderStatus status;
 
+    @OneToMany(mappedBy = "order")
+    private List<OrderItemEntity> orderItems = new ArrayList<>();
+
     public Long getId() {
         return id;
     }
@@ -32,12 +38,16 @@ public class OrderEntity {
         this.id = id;
     }
 
-    public Long getMemberId() {
-        return memberId;
+    public MemberEntity getMember() {
+        return member;
     }
 
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
+    public void setMember(MemberEntity member) {
+        if (this.member != null)
+            this.member.getOrders().remove(this);
+        if (member != null)
+            member.getOrders().add(this);
+        this.member = member;
     }
 
     public Date getOrderDate() {
@@ -54,5 +64,13 @@ public class OrderEntity {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public List<OrderItemEntity> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItemEntity> orderItems) {
+        this.orderItems = orderItems;
     }
 }

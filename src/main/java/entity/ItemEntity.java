@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class ItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "ID")
     private Long id;
 
     @Column(name = "NAME")

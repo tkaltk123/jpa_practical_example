@@ -7,20 +7,23 @@ import javax.persistence.*;
 public class OrderItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "ORDER_ID")
-    private Long orderId;
+    @ManyToOne
+    @JoinColumn(name = "ORDER_ID")
+    private OrderEntity order;
 
-    @Column(name = "ITEM_ID")
-    private Long itemId;
+    @ManyToOne
+    @JoinColumn(name = "ITEM_ID")
+    private ItemEntity item;
 
     @Column(name = "ORDER_PRICE")
     private Integer orderPrice;
 
     @Column(name = "COUNT")
     private Integer count;
+
 
     public Long getId() {
         return id;
@@ -30,20 +33,24 @@ public class OrderItemEntity {
         this.id = id;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public OrderEntity getOrder() {
+        return order;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+    public void setOrder(OrderEntity order) {
+        if (this.order != null)
+            this.order.getOrderItems().remove(this);
+        if (order != null)
+            order.getOrderItems().add(this);
+        this.order = order;
     }
 
-    public Long getItemId() {
-        return itemId;
+    public ItemEntity getItem() {
+        return item;
     }
 
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
+    public void setItem(ItemEntity item) {
+        this.item = item;
     }
 
     public Integer getOrderPrice() {

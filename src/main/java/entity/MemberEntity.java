@@ -1,13 +1,15 @@
 package entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "MEMBERS")
 public class MemberEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "ID")
     private Long id;
 
     @Column(name = "NAME")
@@ -21,6 +23,9 @@ public class MemberEntity {
 
     @Column(name = "ZIPCODE")
     private String zipcode;
+
+    @OneToMany(mappedBy = "member")
+    private List<OrderEntity> orders = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -60,5 +65,13 @@ public class MemberEntity {
 
     public void setZipcode(String zipcode) {
         this.zipcode = zipcode;
+    }
+
+    public List<OrderEntity> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderEntity> orders) {
+        this.orders = orders;
     }
 }
