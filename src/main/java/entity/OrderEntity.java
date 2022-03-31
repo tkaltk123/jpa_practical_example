@@ -30,6 +30,10 @@ public class OrderEntity {
     @OneToMany(mappedBy = "order")
     private List<OrderItemEntity> orderItems = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "DELIVERY_ID", unique = true)
+    private DeliveryEntity delivery;
+
     public Long getId() {
         return id;
     }
@@ -72,5 +76,17 @@ public class OrderEntity {
 
     public void setOrderItems(List<OrderItemEntity> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    public DeliveryEntity getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(DeliveryEntity delivery) {
+        if (this.delivery != null)
+            this.delivery.setOrder(null);
+        if (delivery != null)
+            delivery.setOrder(this);
+        this.delivery = delivery;
     }
 }

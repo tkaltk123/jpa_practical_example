@@ -1,6 +1,7 @@
 package entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "ITEMS")
@@ -18,6 +19,9 @@ public class ItemEntity {
 
     @Column(name = "STOCK_QUANTITY")
     private Integer stockQuantity;
+
+    @ManyToMany(mappedBy = "items")
+    private List<CategoryEntity> categories;
 
     public Long getId() {
         return id;
@@ -49,5 +53,13 @@ public class ItemEntity {
 
     public void setStockQuantity(Integer stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    public List<CategoryEntity> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<CategoryEntity> categories) {
+        this.categories = categories;
     }
 }
