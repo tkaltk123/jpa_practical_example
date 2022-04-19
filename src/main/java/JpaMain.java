@@ -1,10 +1,8 @@
-import entity.ItemEntity;
-import entity.MemberEntity;
-import entity.OrderEntity;
-import entity.OrderItemEntity;
+import entity.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
+import java.util.Arrays;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -19,6 +17,7 @@ public class JpaMain {
             logic(em);
             tran.commit();
         } catch (Exception e) {
+            e.printStackTrace();
             tran.rollback();
         } finally {
             em.close();
@@ -27,29 +26,7 @@ public class JpaMain {
     }
 
     private static void logic(EntityManager em) {
-        var member = new MemberEntity();
-        member.setName("멤버");
-        em.persist(member);
-
-        var order = new OrderEntity();
-        order.setMember(member);
-        em.persist(order);
-
-        var item = new ItemEntity();
-        item.setName("상품");
-        item.setPrice(100);
-        item.setStockQuantity(1);
-        em.persist(item);
-
-        var orderItem = new OrderItemEntity();
-        orderItem.setOrder(order);
-        orderItem.setItem(item);
-        orderItem.setCount(1);
-        orderItem.setOrderPrice(100);
-        em.persist(orderItem);
-
-        System.out.println("ordered member name : "+order.getMember().getName());
-        System.out.println("ordered item#1 name : "+order.getOrderItems().get(0).getItem().getName());
-
+        var item = em.find(AlbumEntity.class,1L);
+        System.out.println(item.getName());
     }
 }
