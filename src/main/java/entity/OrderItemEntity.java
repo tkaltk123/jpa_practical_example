@@ -1,41 +1,40 @@
 package entity;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@SuperBuilder
 @Entity
+@SQLDelete(sql = "UPDATE ORDERS_ITEMS SET IS_DELETED = 1 WHERE ID=?")
+@Where(clause = "IS_DELETED = 0")
 @Table(name = "ORDERS_ITEMS")
-public class OrderItemEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
-    private Long id;
+public class OrderItemEntity extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ORDER_ID")
     private OrderEntity order;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ITEM_ID")
     private ItemEntity item;
 
+    @Basic
     @Column(name = "ORDER_PRICE")
     private Integer orderPrice;
 
+    @Basic
     @Column(name = "COUNT")
     private Integer count;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public OrderEntity getOrder() {
-        return order;
-    }
 
     public void setOrder(OrderEntity order) {
         if (this.order != null)
@@ -43,29 +42,5 @@ public class OrderItemEntity {
         if (order != null)
             order.getOrderItems().add(this);
         this.order = order;
-    }
-
-    public ItemEntity getItem() {
-        return item;
-    }
-
-    public void setItem(ItemEntity item) {
-        this.item = item;
-    }
-
-    public Integer getOrderPrice() {
-        return orderPrice;
-    }
-
-    public void setOrderPrice(Integer orderPrice) {
-        this.orderPrice = orderPrice;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
     }
 }

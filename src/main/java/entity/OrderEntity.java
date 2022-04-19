@@ -1,5 +1,12 @@
 package entity;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import util.OrderStatus;
 
 import javax.persistence.*;
@@ -7,19 +14,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@SuperBuilder
 @Entity
+@SQLDelete(sql = "UPDATE ORDERS SET IS_DELETED = 1 WHERE ID=?")
+@Where(clause = "IS_DELETED = 0")
 @Table(name = "ORDERS")
-public class OrderEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
-    private Long id;
-
-    @ManyToOne
+public class OrderEntity extends BaseEntity {
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "MEMBER_ID")
     private MemberEntity member;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Basic
     @Column(name = "ORDER_DATE")
     private Date orderDate;
 
@@ -30,21 +38,9 @@ public class OrderEntity {
     @OneToMany(mappedBy = "order")
     private List<OrderItemEntity> orderItems = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "DELIVERY_ID", unique = true)
     private DeliveryEntity delivery;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public MemberEntity getMember() {
-        return member;
-    }
 
     public void setMember(MemberEntity member) {
         if (this.member != null)
@@ -52,34 +48,6 @@ public class OrderEntity {
         if (member != null)
             member.getOrders().add(this);
         this.member = member;
-    }
-
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public List<OrderItemEntity> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(List<OrderItemEntity> orderItems) {
-        this.orderItems = orderItems;
-    }
-
-    public DeliveryEntity getDelivery() {
-        return delivery;
     }
 
     public void setDelivery(DeliveryEntity delivery) {

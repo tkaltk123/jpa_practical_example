@@ -26,7 +26,16 @@ public class JpaMain {
     }
 
     private static void logic(EntityManager em) {
-        var item = em.find(AlbumEntity.class,1L);
-        System.out.println(item.getName());
+//        var item = AlbumEntity
+//                .builder()
+//                .name("앨범")
+//                .price(100)
+//                .stockQuantity(1)
+//                .artist("kim")
+//                .etc("")
+//                .build();
+//        em.persist(item);
+        var item2 = em.find(AlbumEntity.class,3L);
+        em.remove(item2);
     }
 }
